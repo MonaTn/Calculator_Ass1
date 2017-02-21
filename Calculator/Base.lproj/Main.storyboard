@@ -76,6 +76,9 @@
                                 <state key="normal" title="%">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="percentage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DN1-Ui-17g"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gc5-E2-72Z">
                                 <rect key="frame" x="281" y="202" width="94" height="94"/>

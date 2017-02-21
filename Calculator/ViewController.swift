@@ -14,17 +14,16 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultLable: UILabel!
     public         var screenAmount : String = ""
     public         var dotFlag : Bool = false
-    public         var operatorTouchedFlag : Bool = false
     public         var operatorType : String = ""
     public         var operant1 : String = ""
     public         var operant2 : String = ""
     public         var result : Double = 0
     public         var newNumber : Bool = false
 
-
     
    // All Cleare or Cleare
     @IBAction func trunScreenAmountToZero(_ sender: UIButton) {
+        
         if clearButton.currentTitle == "C" {
             // All cleare
             clearButton.setTitle("AC", for: .normal)
@@ -36,13 +35,13 @@ class ViewController: UIViewController {
     }
     
      
-    // change the number on screen to a plus or negative
+    // Changing the number on screen to a plus or negative
     @IBAction func inverseSign(_ sender: UIButton) {
 
         screenAmount = resultLable.text!
         if screenAmount.range(of: "-") != nil  {
             screenAmount.remove(at: screenAmount.startIndex)
-        }else {
+        } else {
             screenAmount.insert("-", at:screenAmount.startIndex )
         }
         resultLable.text = screenAmount
@@ -50,6 +49,7 @@ class ViewController: UIViewController {
     
     // Dot button touched
     @IBAction func dotButtonTouched(_ sender: UIButton) {
+        
         if (dotFlag == false) {
             resultLable.text?.insert(".", at: (resultLable.text?.endIndex)!)
             dotFlag = true
@@ -58,15 +58,15 @@ class ViewController: UIViewController {
         }
     }
     
-    // Number touched  ***** mask??
+    // Number touched
     @IBAction func numberTouched(_ sender: UIButton) {
+        
         clearButton.setTitle ("C", for : .normal)
         screenAmount = resultLable.text!
-     
         if (screenAmount == "0" || newNumber == true){
             screenAmount = ""
             newNumber = false
-        } else if screenAmount == "-0" {
+        } else if (screenAmount == "-0") {
             screenAmount = "-"
         } else {
             // adjusting the font size of a number (Maximum 9 digits)
@@ -80,59 +80,46 @@ class ViewController: UIViewController {
        resultLable.text = screenAmount
     }
     
-    
+    // If an operator is clicked
     @IBAction func operatorTouched(_ sender: UIButton) {
         if (operant1 == "" && operant2 == "") {
             operant1 = resultLable.text!
             newNumber = true
-        } else if (operant1 != "" && operant2 == "") {
-            operant2 = resultLable.text!
-            result = doOperation(operatorType: operatorType, operant1: operant1, operant2: operant2)
-            resultLable.text = String (result)
-            operant1 = String (result)
-            newNumber = true
             dotFlag = false
-            operant2 = ""
+        } else if (operant1 != "" && operant2 == "") {
+            execution()
+            operant1 = String (result)
             result = 0
         }
         operatorType = sender.currentTitle!
     }
     
- /**   func xxx () {
-        if (operatorTouchedFlag == false && newNumber == false) {
-            operatorTouchedFlag = true
-            operant1 = Double(resultLable.text!)!
-            print ("1. opt1 = \(operant1) \(operatorType) op2= \(operant2) \(operatorTouchedFlag)-> result = \(result)")
-            
-        } else {
-            operant2 = Double (resultLable.text!)!
-            //result = doOperation(operatorType: operatorType, operant1: operant1, operant2: operant2)
-            print ("2. opt1 = \(operant1) \(operatorType) op2= \(operant2) \(operatorTouchedFlag)-> result = \(result)")
-            resultLable.text = String (describing: result)
-            operant1 = result
-            operant2 = 0
-            result = 0
-            operatorTouchedFlag = false
-            newNumber = true
-        }
-
-    }**/
-    
+    // Different operators
     func doOperation (operatorType : String, operant1 : String, operant2 : String) -> Double {
         switch operatorType {
-        case "+":
+        case "+": // Addition
             return Double(operant1)! + Double(operant2)!
-        case "-":
+        case "-": // Subtraction
             return Double(operant1)! - Double(operant2)!
-        case "/":
+        case "/": // Division
             return Double(operant1)! / Double(operant2)!
-        case "X":
+        case "X": // Multiplication
             return Double(operant1)! * Double(operant2)!
-        default:
+         default:
             return 0
          }
     }
     
+    func execution () {
+        operant2 = resultLable.text!
+        result = doOperation(operatorType: operatorType, operant1: operant1, operant2: operant2)
+        resultLable.text = String (round (value: result, toNearest: 100000))
+        newNumber = true
+        dotFlag = false
+        operant2 = ""
+    }
+    
+    // Cliking the AC button
     func resetEverything () {
         newNumber = true
         dotFlag = false
@@ -142,16 +129,35 @@ class ViewController: UIViewController {
         result = 0
     }
     
-    
+    // Cliking equal button
     @IBAction func equalTouched(_ sender: UIButton) {
-        operant2 = resultLable.text!
-        result = doOperation(operatorType: operatorType, operant1: operant1, operant2: operant2)
-        resultLable.text = String (result)
+        execution()
         operant1 = String (result)
-        newNumber = true
-        operant2 = ""
         result = 0
     }
+    
+    // Cliking percentage button
+    @IBAction func percentage(_ sender: UIButton) {
+        if (operant1 != "") {
+            if (operant2 == "") {
+                operant2 = "1"
+            }
+            operant2 = resultLable.text!
+            result = (Double(operant1)! * Double (operant2)!)/100
+            newNumber = true
+            dotFlag = false
+            operant2 = ""
+            resultLable.text = String (result)
+            result = 0
+            
+        }
+    }
+    
+    // Round a Double
+    func round (value : Double, toNearest : Double) -> Double{
+        return floor (value * toNearest)/toNearest
+    }
+
     
 }
 
